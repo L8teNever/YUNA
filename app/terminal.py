@@ -7,9 +7,9 @@ import threading
 
 
 class TerminalSession:
-    def __init__(self, sid, emit_fn):
+    def __init__(self, sid, socketio):
         self.sid = sid
-        self.emit_fn = emit_fn
+        self.socketio = socketio
         self.fd = None
         self.pid = None
         self._alive = False
@@ -49,11 +49,11 @@ class TerminalSession:
                 data = os.read(self.fd, 1024)
                 if not data:
                     break
-                self.emit_fn("output", {"data": data.decode("utf-8", errors="replace")}, to=self.sid)
+                self.socketio.emit("output", {"data": data.decode("utf-8", errors="replace")}, room=self.sid)
             except OSError:
                 break
         self._alive = False
-        self.emit_fn("disconnect_terminal", {}, to=self.sid)
+        self.socketio.emit("disconnect_terminal", {}, room=self.sid)
 
     def kill(self):
         self._alive = False
@@ -70,8 +70,8 @@ class TerminalSession:
 _sessions: dict[str, TerminalSession] = {}
 
 
-def create_session(sid, emit_fn, cols=80, rows=24) -> TerminalSession:
-    session = TerminalSession(sid, emit_fn)
+def create_session(sid, socketio, cols=80, rows=24) -> TerminalSession:
+    session = TerminalSession(sid, socketio)
     session.start(cols, rows)
     _sessions[sid] = session
     return session

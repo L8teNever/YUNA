@@ -22,34 +22,7 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════ LOGIN SCREEN ═══════════════════════ -->
-<div id="login-screen" class="login-screen hidden">
-  <div class="login-card elevation-3">
-    <div class="login-logo">
-      <span class="logo-icon">⬡</span>
-      <span class="logo-text">YUNA</span>
-    </div>
-    <p class="login-subtitle">Web Terminal</p>
-    <div class="text-field">
-      <input
-        id="password-input"
-        type="password"
-        placeholder=" "
-        autocomplete="current-password"
-        autofocus
-      />
-      <label for="password-input">Passwort</label>
-      <div class="text-field-line"></div>
-    </div>
-    <p id="login-error" class="login-error hidden">Falsches Passwort</p>
-    <button id="login-btn" class="btn-filled ripple">
-      <span>Anmelden</span>
-    </button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ APP ════════════════════════════════ -->
-<div id="app" class="app hidden">
+<div id="app" class="app">
 
   <!-- Top App Bar -->
   <header class="app-bar elevation-2">
@@ -83,11 +56,6 @@
 
 </div>
 
-<script>
-  window.YUNA_CONFIG = {
-    passwordRequired: {{ 'true' if password_required else 'false' }}
-  };
-</script>
 <script src="/static/js/terminal.js"></script>
 </body>
 </html>

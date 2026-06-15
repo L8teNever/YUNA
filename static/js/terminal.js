@@ -31,64 +31,14 @@ let term   = null;
 let fitAddon = null;
 let isConnected = false;
 
-const cfg = window.YUNA_CONFIG || { passwordRequired: false };
-
 /* ── DOM refs ───────────────────────────────────────────────────────────────── */
-const loginScreen  = document.getElementById('login-screen');
-const app          = document.getElementById('app');
-const pwInput      = document.getElementById('password-input');
-const loginBtn     = document.getElementById('login-btn');
-const loginError   = document.getElementById('login-error');
-const connDot      = document.querySelector('.conn-dot');
-const newSessBtn   = document.getElementById('new-session-btn');
-const fullscreenBtn= document.getElementById('fullscreen-btn');
-const fsExpand     = document.getElementById('fs-expand');
-const fsShrink     = document.getElementById('fs-shrink');
-const keyboardTrig = document.getElementById('keyboard-trigger');
-const termEl       = document.getElementById('terminal');
-
-/* ── Bootstrap ──────────────────────────────────────────────────────────────── */
-function init() {
-  if (cfg.passwordRequired) {
-    show(loginScreen);
-    bindLogin();
-  } else {
-    show(app);
-    startTerminal();
-  }
-}
-
-/* ── Login ──────────────────────────────────────────────────────────────────── */
-function bindLogin() {
-  loginBtn.addEventListener('click', doLogin);
-  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-}
-
-async function doLogin() {
-  const pw = pwInput.value;
-  if (!pw) return;
-  loginBtn.disabled = true;
-  try {
-    const res = await fetch('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pw }),
-    });
-    if (res.ok) {
-      hide(loginScreen);
-      show(app);
-      startTerminal();
-    } else {
-      show(loginError);
-      pwInput.value = '';
-      pwInput.focus();
-    }
-  } catch {
-    show(loginError);
-  } finally {
-    loginBtn.disabled = false;
-  }
-}
+const connDot       = document.querySelector('.conn-dot');
+const newSessBtn    = document.getElementById('new-session-btn');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const fsExpand      = document.getElementById('fs-expand');
+const fsShrink      = document.getElementById('fs-shrink');
+const keyboardTrig  = document.getElementById('keyboard-trigger');
+const termEl        = document.getElementById('terminal');
 
 /* ── Terminal ────────────────────────────────────────────────────────────────── */
 function startTerminal() {
@@ -114,12 +64,9 @@ function startTerminal() {
   connectSocket();
 
   term.onData(data => {
-    if (socket && isConnected) {
-      socket.emit('input', { data });
-    }
+    if (socket && isConnected) socket.emit('input', { data });
   });
 
-  /* resize observer */
   const ro = new ResizeObserver(() => {
     requestAnimationFrame(() => {
       fitAddon.fit();
@@ -131,17 +78,13 @@ function startTerminal() {
   ro.observe(termEl);
   ro.observe(document.querySelector('.terminal-container'));
 
-  window.addEventListener('resize', () => {
-    fitAddon.fit();
-  });
+  window.addEventListener('resize', () => fitAddon.fit());
 
-  /* touch: focus terminal on tap so virtual keyboard appears */
   termEl.addEventListener('touchstart', () => term.focus(), { passive: true });
 }
 
 /* ── Socket.IO ──────────────────────────────────────────────────────────────── */
 function connectSocket() {
-  const params = term ? `?cols=${term.cols}&rows=${term.rows}` : '';
   socket = io({ path: '/socket.io', query: { cols: term?.cols, rows: term?.rows } });
 
   socket.on('connect', () => {
@@ -188,20 +131,16 @@ fullscreenBtn?.addEventListener('click', () => {
 });
 
 document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    show(fsExpand); hide(fsShrink);
-  }
-  setTimeout(() => { fitAddon?.fit(); }, 200);
+  if (!document.fullscreenElement) { show(fsExpand); hide(fsShrink); }
+  setTimeout(() => fitAddon?.fit(), 200);
 });
 
 /* ── Mobile keyboard trigger ─────────────────────────────────────────────────── */
-keyboardTrig?.addEventListener('click', () => {
-  term?.focus();
-});
+keyboardTrig?.addEventListener('click', () => term?.focus());
 
 /* ── Helpers ─────────────────────────────────────────────────────────────────── */
 function show(el) { el?.classList.remove('hidden'); }
 function hide(el) { el?.classList.add('hidden'); }
 
 /* ── Start ───────────────────────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', startTerminal);
