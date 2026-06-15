@@ -1,0 +1,344 @@
+/* ── Nord 16-colour palette ────────────────────────────────────────────────── */
+:root {
+  /* Polar Night */
+  --nord0: #2E3440;
+  --nord1: #3B4252;
+  --nord2: #434C5E;
+  --nord3: #4C566A;
+  /* Snow Storm */
+  --nord4: #D8DEE9;
+  --nord5: #E5E9F0;
+  --nord6: #ECEFF4;
+  /* Frost */
+  --nord7: #8FBCBB;
+  --nord8: #88C0D0;
+  --nord9: #81A1C1;
+  --nord10: #5E81AC;
+  /* Aurora */
+  --nord11: #BF616A;
+  --nord12: #D08770;
+  --nord13: #EBCB8B;
+  --nord14: #A3BE8C;
+  --nord15: #B48EAD;
+
+  /* Material Design tokens mapped to Nord */
+  --md-sys-color-background:        var(--nord0);
+  --md-sys-color-surface:           var(--nord1);
+  --md-sys-color-surface-variant:   var(--nord2);
+  --md-sys-color-primary:           var(--nord8);
+  --md-sys-color-primary-container: var(--nord10);
+  --md-sys-color-on-primary:        var(--nord0);
+  --md-sys-color-on-surface:        var(--nord4);
+  --md-sys-color-on-surface-dim:    var(--nord3);
+  --md-sys-color-error:             var(--nord11);
+  --md-sys-color-outline:           var(--nord3);
+
+  --app-bar-height: 56px;
+  --border-radius-card: 16px;
+  --border-radius-btn: 20px;
+
+  --elevation-1: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+  --elevation-2: 0 3px 6px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.4);
+  --elevation-3: 0 10px 30px rgba(0,0,0,.5), 0 4px 10px rgba(0,0,0,.4);
+}
+
+/* ── Reset & base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--nord0);
+  color: var(--nord4);
+  font-family: "Roboto", "Google Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+/* ── Ripple ────────────────────────────────────────────────────────────────── */
+.ripple { position: relative; overflow: hidden; }
+.ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 200ms;
+  border-radius: inherit;
+}
+.ripple:active::after { opacity: 0.12; }
+
+/* ── Elevation ─────────────────────────────────────────────────────────────── */
+.elevation-1 { box-shadow: var(--elevation-1); }
+.elevation-2 { box-shadow: var(--elevation-2); }
+.elevation-3 { box-shadow: var(--elevation-3); }
+
+/* ── Login Screen ──────────────────────────────────────────────────────────── */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nord0);
+  z-index: 200;
+}
+
+.login-card {
+  background: var(--nord1);
+  border-radius: var(--border-radius-card);
+  padding: 40px 36px 32px;
+  width: min(400px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.logo-icon {
+  font-size: 2.4rem;
+  color: var(--nord8);
+  line-height: 1;
+}
+
+.logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--nord6);
+}
+
+.login-subtitle {
+  color: var(--nord3);
+  font-size: .85rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-top: -8px;
+}
+
+/* Material outlined text field */
+.text-field {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.text-field input {
+  width: 100%;
+  padding: 16px 14px 8px;
+  background: var(--nord2);
+  border: none;
+  border-radius: 8px 8px 0 0;
+  color: var(--nord6);
+  font-size: 1rem;
+  outline: none;
+  caret-color: var(--nord8);
+  transition: background 180ms;
+}
+
+.text-field input:focus { background: var(--nord3); }
+
+.text-field label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--nord3);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 180ms ease;
+}
+
+.text-field input:focus + label,
+.text-field input:not(:placeholder-shown) + label {
+  top: 8px;
+  font-size: .72rem;
+  color: var(--nord8);
+  transform: none;
+}
+
+.text-field-line {
+  height: 2px;
+  background: var(--nord3);
+  border-radius: 0 0 2px 2px;
+  transition: background 180ms;
+}
+
+.text-field input:focus ~ .text-field-line { background: var(--nord8); }
+
+.login-error {
+  color: var(--nord11);
+  font-size: .82rem;
+  align-self: flex-start;
+  margin-top: -4px;
+}
+
+/* Filled button */
+.btn-filled {
+  width: 100%;
+  padding: 14px;
+  background: var(--nord8);
+  color: var(--nord0);
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  border: none;
+  border-radius: var(--border-radius-btn);
+  cursor: pointer;
+  transition: background 180ms, box-shadow 180ms;
+  margin-top: 8px;
+}
+
+.btn-filled:hover {
+  background: var(--nord7);
+  box-shadow: var(--elevation-1);
+}
+
+/* ── App Shell ─────────────────────────────────────────────────────────────── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ── Top App Bar ───────────────────────────────────────────────────────────── */
+.app-bar {
+  height: var(--app-bar-height);
+  min-height: var(--app-bar-height);
+  background: var(--nord1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 0 16px;
+  z-index: 10;
+}
+
+.app-bar-leading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon-sm {
+  font-size: 1.4rem;
+  color: var(--nord8);
+}
+
+.app-bar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--nord6);
+}
+
+.app-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--nord4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 180ms;
+}
+
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn:hover { background: rgba(136, 192, 208, .12); }
+
+/* Connection indicator */
+.conn-status {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.conn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--nord3);
+  transition: background 300ms;
+}
+
+.conn-dot.connected    { background: var(--nord14); box-shadow: 0 0 6px var(--nord14); }
+.conn-dot.disconnected { background: var(--nord11); }
+
+/* ── Terminal ──────────────────────────────────────────────────────────────── */
+.terminal-container {
+  flex: 1;
+  overflow: hidden;
+  background: var(--nord0);
+  padding: 4px;
+}
+
+.terminal-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+/* xterm overrides */
+.xterm { height: 100%; }
+.xterm-viewport { background: var(--nord0) !important; }
+.xterm-screen  { background: var(--nord0) !important; }
+
+/* ── Mobile keyboard trigger ───────────────────────────────────────────────── */
+.keyboard-trigger {
+  display: none;
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--nord10);
+  color: var(--nord6);
+  box-shadow: var(--elevation-2);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  border: none;
+  transition: background 180ms;
+}
+
+.keyboard-trigger svg { width: 24px; height: 24px; }
+.keyboard-trigger:hover { background: var(--nord9); }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  :root { --app-bar-height: 48px; }
+
+  .login-card { padding: 32px 24px 28px; }
+  .logo-text  { font-size: 1.6rem; }
+
+  .keyboard-trigger { display: flex; }
+
+  .terminal-container { padding: 2px; }
+}
+
+@media (max-width: 360px) {
+  .login-card { padding: 24px 18px 22px; }
+}
+
+/* ── Scrollbar styling ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--nord0); }
+::-webkit-scrollbar-thumb { background: var(--nord3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--nord9); }

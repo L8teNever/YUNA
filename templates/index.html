@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#2E3440" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>YUNA</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+
+  <!-- xterm.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-web-links@0.9.0/lib/xterm-addon-web-links.min.js"></script>
+
+  <!-- Socket.IO -->
+  <script src="https://cdn.jsdelivr.net/npm/socket.io@4.7.5/client-dist/socket.io.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ LOGIN SCREEN ═══════════════════════ -->
+<div id="login-screen" class="login-screen hidden">
+  <div class="login-card elevation-3">
+    <div class="login-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">YUNA</span>
+    </div>
+    <p class="login-subtitle">Web Terminal</p>
+    <div class="text-field">
+      <input
+        id="password-input"
+        type="password"
+        placeholder=" "
+        autocomplete="current-password"
+        autofocus
+      />
+      <label for="password-input">Passwort</label>
+      <div class="text-field-line"></div>
+    </div>
+    <p id="login-error" class="login-error hidden">Falsches Passwort</p>
+    <button id="login-btn" class="btn-filled ripple">
+      <span>Anmelden</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ APP ════════════════════════════════ -->
+<div id="app" class="app hidden">
+
+  <!-- Top App Bar -->
+  <header class="app-bar elevation-2">
+    <div class="app-bar-leading">
+      <span class="logo-icon-sm">⬡</span>
+      <span class="app-bar-title">YUNA</span>
+    </div>
+    <div class="app-bar-actions">
+      <button id="new-session-btn" class="icon-btn ripple" title="Neue Session" aria-label="Neue Session">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      </button>
+      <button id="fullscreen-btn" class="icon-btn ripple" title="Vollbild" aria-label="Vollbild">
+        <svg id="fs-expand" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        <svg id="fs-shrink" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+      </button>
+      <div id="conn-status" class="conn-status" title="Verbindungsstatus">
+        <span class="conn-dot"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Terminal Container -->
+  <main class="terminal-container">
+    <div id="terminal" class="terminal-wrapper"></div>
+  </main>
+
+  <!-- Mobile Keyboard Trigger -->
+  <div id="keyboard-trigger" class="keyboard-trigger ripple" title="Tastatur öffnen">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+  </div>
+
+</div>
+
+<script>
+  window.YUNA_CONFIG = {
+    passwordRequired: {{ 'true' if password_required else 'false' }}
+  };
+</script>
+<script src="/static/js/terminal.js"></script>
+</body>
+</html>
