@@ -3,7 +3,6 @@ import pty
 import fcntl
 import termios
 import struct
-import threading
 
 
 class TerminalSession:
@@ -13,7 +12,6 @@ class TerminalSession:
         self.fd = None
         self.pid = None
         self._alive = False
-        self._thread = None
 
     def start(self, cols=80, rows=24):
         self.pid, self.fd = pty.fork()
@@ -25,8 +23,7 @@ class TerminalSession:
         else:
             self._resize(cols, rows)
             self._alive = True
-            self._thread = threading.Thread(target=self._read_loop, daemon=True)
-            self._thread.start()
+            self.socketio.start_background_task(self._read_loop)
 
     def write(self, data: str):
         if self.fd and self._alive:

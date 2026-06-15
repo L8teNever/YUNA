@@ -1,12 +1,9 @@
 services:
   yuna:
-    image: ghcr.io/l8tenever/yuna:latest
-    # To build locally instead of pulling, comment out 'image' and uncomment:
-    # build: .
+    build: .
     ports:
       - "10.7.0.1:1456:8080"
     environment:
-      - YUNA_PASSWORD=${YUNA_PASSWORD:-}
       - PORT=8080
     restart: unless-stopped
     # Uncomment to mount host filesystem into container:
