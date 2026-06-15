@@ -3,6 +3,8 @@ import pty
 import fcntl
 import termios
 import struct
+import select
+import eventlet
 
 
 class TerminalSession:
@@ -43,14 +45,25 @@ class TerminalSession:
     def _read_loop(self):
         while self._alive:
             try:
-                data = os.read(self.fd, 1024)
-                if not data:
-                    break
-                self.socketio.emit("output", {"data": data.decode("utf-8", errors="replace")}, room=self.sid)
-            except OSError:
+                r, _, _ = select.select([self.fd], [], [], 0.05)
+                if r:
+                    data = os.read(self.fd, 4096)
+                    if not data:
+                        break
+                    self.socketio.emit(
+                        "output",
+                        {"data": data.decode("utf-8", errors="replace")},
+                        room=self.sid,
+                    )
+                else:
+                    eventlet.sleep(0)
+            except (OSError, ValueError):
                 break
         self._alive = False
-        self.socketio.emit("disconnect_terminal", {}, room=self.sid)
+        try:
+            self.socketio.emit("disconnect_terminal", {}, room=self.sid)
+        except Exception:
+            pass
 
     def kill(self):
         self._alive = False
@@ -60,7 +73,7 @@ class TerminalSession:
             pass
         try:
             os.waitpid(self.pid, os.WNOHANG)
-        except ChildProcessError:
+        except (ChildProcessError, OSError):
             pass
 
 
