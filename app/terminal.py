@@ -4,7 +4,7 @@ import fcntl
 import termios
 import struct
 import select
-import eventlet
+import threading
 
 
 class TerminalSession:
@@ -25,7 +25,8 @@ class TerminalSession:
         else:
             self._resize(cols, rows)
             self._alive = True
-            self.socketio.start_background_task(self._read_loop)
+            t = threading.Thread(target=self._read_loop, daemon=True)
+            t.start()
 
     def write(self, data: str):
         if self.fd and self._alive:
@@ -45,7 +46,7 @@ class TerminalSession:
     def _read_loop(self):
         while self._alive:
             try:
-                r, _, _ = select.select([self.fd], [], [], 0.05)
+                r, _, _ = select.select([self.fd], [], [], 0.1)
                 if r:
                     data = os.read(self.fd, 4096)
                     if not data:
@@ -55,8 +56,6 @@ class TerminalSession:
                         {"data": data.decode("utf-8", errors="replace")},
                         room=self.sid,
                     )
-                else:
-                    eventlet.sleep(0)
             except (OSError, ValueError):
                 break
         self._alive = False

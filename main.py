@@ -1,7 +1,4 @@
 import os
-import eventlet
-eventlet.monkey_patch()
-
 from flask import render_template, request
 from flask_socketio import disconnect
 from app import create_app, socketio
