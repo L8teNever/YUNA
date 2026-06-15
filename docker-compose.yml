@@ -9,6 +9,15 @@ services:
       - YUNA_PASSWORD=${YUNA_PASSWORD:-}
       - PORT=8080
     restart: unless-stopped
+    networks:
+      - yuna_net
     # Uncomment to mount host filesystem into container:
     # volumes:
     #   - /:/host:ro
+
+networks:
+  yuna_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
